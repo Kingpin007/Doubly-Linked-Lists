@@ -25,14 +25,14 @@ int main()
     scanf("%d%d",&data,&pos);
     insert(data,pos);
     printf("\nThe list is:\n");
-    display();
+    print();
     printf("Do you want to insert more elements?(y/n): ");
     scanf(" %c",&choice);
   }
   do
   {
     printf("\nThe list is:\n");
-    display();
+    print();
     printf("Enter the nPosition of deletion: ");
     scanf("%d",&pos);
     delete(pos);
@@ -40,22 +40,23 @@ int main()
     scanf(" %c",&choice);
   }while(choice=='y'||choice=='Y');
   printf("The list is:\n");
-  display();
+  print();
   printf("The list after reversal is:\n");
   reverse();
-  display();
+  print();
 }
 
 void insert(int x,int n)
 {
   struct Node *t1 = (struct Node*)malloc(sizeof(struct Node));
-  struct node *t2 = head;
+  struct Node *t2 = head;
   int i;
   t1->data = x;
   t1->next = NULL;
   t1->prev = NULL;
   if(n==0)
   {
+    t1->next = head;
     head = t1;
     return;
   }
@@ -70,7 +71,13 @@ void delete(int n)
 {
   struct Node *t1 = head;
   int i;
-  for(i=0;i<n-1;i++)
+  if(n==0)
+  {
+    head = head->next;
+    free(t1);
+    return;
+  }
+  for(i=0;i<n;i++)
     t1 = t1->next;
   t1->prev->next = t1->next;
   free(t1);
@@ -82,19 +89,21 @@ void print()
   while(t1!=NULL)
   {
     printf("%d->",t1->data);
-    t = t->next;
+    t1 = t1->next;
   }
   printf("!!!\n");
 }
 
 void reverse()
 {
-  struct Node *current=head,*next;
+  struct Node *current,*next,*prev;
+  prev = NULL;
+  current = head;
   while(current!=NULL)
   {
     next = current->next;
-    current->next = current->prev;
+    current->next = prev;
+    prev = current;
     current = next;
   }
-  head = current->prev;
-}
+  head=prev;}
